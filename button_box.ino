@@ -76,14 +76,14 @@ void loop() {
       for(int j=0; j < sizeof(colPin); j++)
       {
         int currentButtonState = digitalRead(colPin[j]);
-        if(currentButtonState == LOW)
+        if(currentButtonState == LOW && buttonState[i][j] == 1)
         {
           Joystick.pressButton(buttonList[i][j]);
-          buttonState[i][j] = 1;}
-        else if(currentButtonState == HIGH)
+          buttonState[i][j] = 0;}
+        else if(currentButtonState == HIGH && buttonState[i][j] == 0)
         {
           Joystick.releaseButton(buttonList[i][j]);
-          buttonState[i][j] = 0;
+          buttonState[i][j] = 1;
         }
       }
     //digitalWrite(rowPin[i], LOW);
