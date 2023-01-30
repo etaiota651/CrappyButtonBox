@@ -57,6 +57,8 @@ void setup() {
   Joystick.setRxAxisRange(ROT_MIN, ROT_MAX);
   Joystick.setRyAxisRange(ROT_MIN, ROT_MAX);
   Joystick.setRzAxisRange(ROT_MIN, ROT_MAX);
+  Joystick.setYAxisRange(ROT_MIN, ROT_MAX); //have to use a linear axis for rot4
+
 }
 
 
@@ -66,23 +68,25 @@ void setup() {
 
 void loop() {
   bounceTime = millis();
-  if(bounceTime - lastBounce >= BOUNCE_INTERVAL){
-    for(int i=0; i < sizeof(rowPin); i++){
+  if(bounceTime - lastBounce >= BOUNCE_INTERVAL)
+  {
+    for(int i=0; i < sizeof(rowPin); i++)
+    {
       digitalWrite(rowPin[i], HIGH);
-      for(int j=0; j < sizeof(colPin); j++){
+      for(int j=0; j < sizeof(colPin); j++)
+      {
         int currentButtonState = digitalRead(colPin[j]);
-        if(currentButtonState == LOW){
+        if(currentButtonState == LOW)
+        {
           Joystick.pressButton(buttonList[i][j]);
-
-          //Presently just set up as a way to test things. Need to figure out how to change states
-          //over time, so buttons can be held. Want to send individual PRESS and RELEASE events
-          //when they actually happen.
-          delay(100);
+          buttonState[i][j] = 1;}
+        else if(currentButtonState == HIGH)
+        {
           Joystick.releaseButton(buttonList[i][j]);
+          buttonState[i][j] = 0;
         }
       }
-    digitalWrite(rowPin[i], LOW);
-
+    //digitalWrite(rowPin[i], LOW);
     }
     lastBounce = bounceTime;
   }
