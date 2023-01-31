@@ -33,7 +33,7 @@ int buttonState[5][5] = {{0,0,0,0,0},
 #define BOUNCE_INTERVAL 50
 
 
-unsigned long bounceTime = 0;
+unsigned long currentMillis = 0;
 unsigned long lastBounce = 0;
 
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_MULTI_AXIS,26,
@@ -45,6 +45,8 @@ Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_MULTI_AXIS,26,
 //    write a more granular anti-bounce.
 
 void setup() {
+  Serial.begin(9600);
+  Serial.println("***Begin***");
   //set initial pin states from pin arrays
   for(int i=0; i < sizeof(rowPin); i++){
     pinMode(rowPin[i], OUTPUT);
@@ -67,8 +69,8 @@ void setup() {
 //  event based upon the previous state. Then update the previous state with the current one.
 
 void loop() {
-  bounceTime = millis();
-  if(bounceTime - lastBounce >= BOUNCE_INTERVAL)
+  currentMillis = millis();
+  if(currentMillis - lastBounce >= BOUNCE_INTERVAL)
   {
     for(int i=0; i < sizeof(rowPin); i++)
     {
@@ -88,6 +90,6 @@ void loop() {
       }
     //digitalWrite(rowPin[i], LOW);
     }
-    lastBounce = bounceTime;
+    lastBounce = currentMillis;
   }
 }
