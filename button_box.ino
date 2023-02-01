@@ -85,23 +85,22 @@ void loop() {
       for(int j=0; j < sizeof(colPin[]); j++)
       {
         currentButtonState = digitalRead(colPin[j]);
-
         if(currentButtonState == LOW && buttonState[i][j] == 0)
         {
           Joystick.pressButton(buttonList[i][j]);
           buttonState[i][j] = 1;
-          pressedButtonList = pressedButtonList + buttonList[i][j];
+          pressedButtonList = pressedButtonList + ", " + buttonList[i][j];
         }
         else if(currentButtonState == HIGH && buttonState[i][j] == 1)
         {
           Joystick.releaseButton(buttonList[i][j]);
           buttonState[i][j] = 0;
         }
-
       }
-    //digitalWrite(rowPin[i], LOW);
     }
+
     for(int p = 1; p < sizeof(bigSwitchButtonAssignment[]); p++)
+    {
       currentButtonState = digitalRead(bigSwitch[p]);
       if(currentButtonState == HIGH && bigSwitchButtonState[p] == 0)
       {
@@ -113,8 +112,10 @@ void loop() {
         Joystick.pressButton(bigSwitchButtonAssignment[p]);
         bigSwitchButtonAssignment[p] = 0;
       }
+    }
     lastBounce = currentMillis;
   }
+
   //Set all analog axes. This may need bounce protection, as well,
   //expecially if the pots are noisy. Hell, I may need to set some guard rails
   //regarding change, but I'd rather not if I don't have to.
