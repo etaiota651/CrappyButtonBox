@@ -30,9 +30,7 @@ unsigned int buttonState[5][5] = {{0,0,0,0,0},
                         {0,0,0,0,0}};
 
 unsigned int bigSwitchButtonState[2] = {0,0};
-
 unsigned int axisValue[4] = {0,0,0,0};
-
 unsigned long currentMillis = 0;
 unsigned long lastBounce = 0;
 
@@ -89,16 +87,20 @@ void loop() {
         {
           Joystick.pressButton(buttonList[i][j]);
           buttonState[i][j] = 1;
-          pressedButtonList = pressedButtonList + ", " + buttonList[i][j];
+          //pressedButtonList = pressedButtonList + ", " + buttonList[i][j];
+          Serial.println(currentMillis + " -- " buttonList[i][j] + " has been pressed.");
         }
         else if(currentButtonState == HIGH && buttonState[i][j] == 1)
         {
           Joystick.releaseButton(buttonList[i][j]);
+          Serial.println(currentMillis + " -- " + buttonList[i][j] + " has been released.");
           buttonState[i][j] = 0;
         }
       }
     }
 
+
+//The big switch. Not part of the matrix. Gotta be separate.
     for(int p = 1; p < sizeof(bigSwitchButtonAssignment[]); p++)
     {
       currentButtonState = digitalRead(bigSwitch[p]);
@@ -124,5 +126,11 @@ void loop() {
   Joystick.setRzAxis(analogRead(A2));
   Joystick.setZAxis(analogread(A3));
 
-  Serial.println(pressedButtonList);
+  //Serial.println(pressedButtonList);
+  Serial.println(currentMillis + " -- " + analogRead(A0));
+  Serial.println(currentMillis + " -- " + analogRead(A1));
+  Serial.println(currentMillis + " -- " + analogRead(A2));
+  Serial.println(currentMillis + " -- " + analogRead(A3));
+
+
 }
