@@ -52,6 +52,10 @@ void setup() {
   for(int i=0; i < sizeof(colPin); i++){
     pinMode(colPin[i], INPUT_PULLUP);
   }
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
   Joystick.begin();
 
   Joystick.setRxAxisRange(ROT_MIN, ROT_MAX);
@@ -69,7 +73,7 @@ void loop() {
   //The thought here is to check for a time delta before checking button states.
   //This SHOULD mitigate any bounces.
   currentMillis = millis();
-  str pressedButtonList = "";
+  char pressedButtonList = "";
   int currentButtonState = 0;
 
   //Check if interval is good, then step through the row pin, activate the row,
@@ -77,10 +81,10 @@ void loop() {
   //This will then update the button state array based upon the read data.
   if(currentMillis - lastBounce >= BOUNCE_INTERVAL)
   {
-    for(int i=0; i < sizeof(rowPin[]); i++)
+    for(int i=0; i < sizeof(rowPin); i++)
     {
       digitalWrite(rowPin[i], HIGH);
-      for(int j=0; j < sizeof(colPin[]); j++)
+      for(int j=0; j < sizeof(colPin); j++)
       {
         currentButtonState = digitalRead(colPin[j]);
         if(currentButtonState == LOW && buttonState[i][j] == 0)
@@ -88,12 +92,12 @@ void loop() {
           Joystick.pressButton(buttonList[i][j]);
           buttonState[i][j] = 1;
           //pressedButtonList = pressedButtonList + ", " + buttonList[i][j];
-          Serial.println(currentMillis + " -- " buttonList[i][j] + " has been pressed.");
+          //Serial.println(String(currentMillis) + " -- " + String(buttonList[i][j]) + " has been pressed.");
         }
         else if(currentButtonState == HIGH && buttonState[i][j] == 1)
         {
           Joystick.releaseButton(buttonList[i][j]);
-          Serial.println(currentMillis + " -- " + buttonList[i][j] + " has been released.");
+          //Serial.println(String(currentMillis) + " -- " + String(buttonList[i][j]) + " has been released.");
           buttonState[i][j] = 0;
         }
       }
@@ -101,18 +105,18 @@ void loop() {
 
 
 //The big switch. Not part of the matrix. Gotta be separate.
-    for(int p = 1; p < sizeof(bigSwitchButtonAssignment[]); p++)
+    for(int p = 1; p < sizeof(bigSwitchButtonAssignment); p++)
     {
       currentButtonState = digitalRead(bigSwitch[p]);
       if(currentButtonState == HIGH && bigSwitchButtonState[p] == 0)
       {
         Joystick.releaseButton(bigSwitchButtonAssignment[p]);
-        bigSwitchButtonAssignment[p] = 1;
+        bigSwitchButtonState[p] = 1;
       }
       else if(currentButtonState == LOW && bigSwitchButtonState[p] == 1)
       {
         Joystick.pressButton(bigSwitchButtonAssignment[p]);
-        bigSwitchButtonAssignment[p] = 0;
+        bigSwitchButtonState[p] = 0;
       }
     }
     lastBounce = currentMillis;
@@ -124,13 +128,12 @@ void loop() {
   Joystick.setRxAxis(analogRead(A0));
   Joystick.setRyAxis(analogRead(A1));
   Joystick.setRzAxis(analogRead(A2));
-  Joystick.setZAxis(analogread(A3));
+  Joystick.setZAxis(analogRead(A3));
 
   //Serial.println(pressedButtonList);
-  Serial.println(currentMillis + " -- " + analogRead(A0));
-  Serial.println(currentMillis + " -- " + analogRead(A1));
-  Serial.println(currentMillis + " -- " + analogRead(A2));
-  Serial.println(currentMillis + " -- " + analogRead(A3));
-
-
+  Serial.println(String(currentMillis) + " -- " + String(analogRead(A0)) + ", " + String(analogRead(A1))
+                 + ", " + String(analogRead(A2)) + ", " + String(analogRead(A3)));
+  //Serial.println(String(currentMillis) + " -- " + String(analogRead(A1)));
+  //Serial.println(String(currentMillis) + " -- " + String(analogRead(A2)));
+  //Serial.println(String(currentMillis) + " -- " + String(analogRead(A3)));
 }
